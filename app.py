@@ -37,13 +37,13 @@ async def login_():
         password = data['password']
         try:
             ph = argon2.PasswordHasher()
-            hash = await pool.fetchval(
+            hash = await pool.fetchval( #type: ignore
                 'SELECT password from users WHERE email = $1', data['email']
             )
             ph.verify(hash, password)
             quart_auth.login_user(
                 quart_auth.AuthUser(
-                    await pool.fetchval(
+                    await pool.fetchval( #type: ignore
                         'SELECT username from users WHERE email = $1',
                         data['email'],
                     )
@@ -58,7 +58,7 @@ async def login_():
 @app.route('/home')
 @quart_auth.login_required
 async def home():
-    return f' Welcome, {quart_auth.current_user.auth_id}, to Spot-a-fly!'
+    return f'Welcome, {quart_auth.current_user.auth_id}, to Spot-a-fly!'
 
 
 app.run(loop=loop)
